@@ -191,5 +191,9 @@ public final class GeoHash {
 	public double getAreaInSquareMeter() {
 		return EARTH_SURFACE_AREA_KM2 * 1000.0D * 1000.0D / Math.pow( 32.0D, _hash.length() );
 	}
+	
+	public String getValue() {
+		return _hash;
+	}
 
 }
