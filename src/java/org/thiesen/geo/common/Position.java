@@ -12,7 +12,7 @@ public final class Position {
 	}
 
 	public GeoHash asGeoHash() {
-		return GeoHash.encodeWithDefaultPrecision(this);
+		return !isUnknown() ? GeoHash.encodeWithDefaultPrecision(this) : null;
 	}
 
 	public Latitude getLatitude() {
