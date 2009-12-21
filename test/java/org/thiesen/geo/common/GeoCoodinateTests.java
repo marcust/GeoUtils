@@ -1,9 +1,9 @@
 package org.thiesen.geo.common;
 
-import org.testng.annotations.Test;
-
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertTrue;
+
+import org.testng.annotations.Test;
 
 
 public class GeoCoodinateTests {
@@ -53,6 +53,7 @@ public class GeoCoodinateTests {
 		double lastSize = Double.MIN_VALUE;
 		for ( int i = GeoHash.DEFAULT_PRECISION; i > 0; i-- ) {
 			double size = hash.withMaximumPrecision(i).getAreaInSquareMeter();
+			//System.out.println(i + ": " + size );
 			assertTrue(lastSize < size,"Less precision leads to greater areas");
 			lastSize = size;
 		}
@@ -67,6 +68,38 @@ public class GeoCoodinateTests {
 		assertEquals(pos1, pos2);
 		assertEquals(pos1, pos1);
 		assertEquals(pos2, pos2);
+	}
+
+	
+	@Test(expectedExceptions = IllegalArgumentException.class)
+	public void testValueOf() {
+		GeoHash.valueOf("    ");
+	}
+	
+	@Test(expectedExceptions = IllegalArgumentException.class)
+	public void testValueOf2() {
+		GeoHash.valueOf("foo");
+	}
+
+	@Test(expectedExceptions = IllegalArgumentException.class)
+	public void testValueOf3() {
+		GeoHash.valueOf(null);
+	}
+
+	@Test
+	public void testAdjacent() {
+		final GeoHash hash = GeoHash.valueOf("DQCJQCPG");
+		
+		assertEquals(hash.calculateTopLeftAdjacentHash(),GeoHash.valueOf("dqcjqcps"));
+		assertEquals(hash.calculateTopAdjacentHash(),GeoHash.valueOf("dqcjqcpu"));
+		assertEquals(hash.calculateTopRightAdjacentHash(),GeoHash.valueOf("dqcjr10h"));
+		
+		assertEquals(hash.calculateLeftAdjacentHash(),GeoHash.valueOf("dqcjqcpe"));
+		assertEquals(hash.calculateRightAdjacentHash(),GeoHash.valueOf("dqcjr105"));
+
+		assertEquals(hash.calculateBottomLeftAdjacentHash(),GeoHash.valueOf("dqcjqcpd"));
+		assertEquals(hash.calculateBottomAdjacentHash(),GeoHash.valueOf("dqcjqcpf"));
+		assertEquals(hash.calculateBottomRightAdjacentHash(),GeoHash.valueOf("dqcjr104"));
 	}
 	
 	
