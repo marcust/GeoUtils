@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="ISO-8859-1" standalone="no"?>
+
+<project name="geo" default="compile" basedir=".">
+     <!-- properties -->
+     <property name="src"                  value="src/" />
+     <property name="test.src"             value="test/" />
+     <property name="build"                value="build" />
+     <property name="classes"              value="${build}/classes" />
+     <property name="test.classes"              value="${build}/test-classes" />
+     <property name="pkgbase"              value="org-thiesen-geo" />
+
+     <property name="lib.home" value="lib/" />
+
+     <fileset dir="${lib.home}" id="libs">
+       <include name="google-collect-1.0-rc5.jar" />
+       <include name="org-thiesen-gitant-v0.0.6.jar" />
+       <include name="org.eclipse.jgit-0.6.0-SNAPSHOT.jar" />
+       <include name="commons-lang-2.4.jar" />
+     </fileset>	
+
+     
+    <path id="compile.classpath">
+       <fileset refid="libs" />
+    </path>
+
+
+    <target name="git-info" description="Use the Task">
+        <taskdef name="git-info" classname="org.thiesen.ant.git.ExtractGitInfo">
+            <classpath>
+                <fileset refid="libs"/>
+            </classpath>
+	</taskdef>
+        <git-info 
+           baseDir=".git"
+           propertyPrefix=""
+           displayInfo="true"
+           />
+    </target>
+
+
+    <target name=".classpath" description="Generate Eclipse .classpath file">
+        <mkdir dir=".eclipse-out"/>
+        <pathconvert property="eclipse.entries" refid="compile.classpath"
+            pathsep="&quot;/&gt;&#10;    &lt;classpathentry kind=&quot;lib&quot; path=&quot;" />
+        <echo file=".classpath"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+    <classpathentry excluding="*.svn|.svn/" kind="src" path="${src}"/>
+    <classpathentry kind="lib" path="${eclipse.entries}"/>
+    <classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+    <classpathentry kind="output" path=".eclipse-bin"/>
+</classpath>]]>
+        </echo>
+    </target>
+    
+     <target name="prepare" depends="git-info">
+        <mkdir dir="${build}" />
+        <mkdir dir="${classes}" />
+        <mkdir dir="${test.classes}" />
+     </target>
+
+     <target name="compile" depends="prepare" description="compile it">
+        <javac srcdir="${src}" source="1.6" target="1.6" 
+               destdir="${classes}" debug="on">
+            <compilerarg value="-Xlint:all"/>
+            <classpath>
+                <fileset refid="libs"/>
+            </classpath>
+         </javac>
+     </target>
+
+     <target name="compile-test" depends="compile" description="compile it">
+        <javac srcdir="${test.src}" source="1.6" target="1.6" 
+               destdir="${test.classes}" debug="on">
+            <compilerarg value="-Xlint:all"/>
+            <classpath>
+                <fileset refid="libs"/>
+                <pathelement location="lib/testng-5.11-jdk15.jar"/>
+                <pathelement location="${classes}"/>
+            </classpath>
+         </javac>
+     </target>
+
+
+     <path id="testng-cp">
+       <pathelement location="lib/testng-5.11-jdk15.jar"/>
+       <pathelement location="${classes}"/>
+       <pathelement location="${test.classes}"/>
+
+     </path>
+ 
+     <taskdef name="testng" classpathref="testng-cp"
+          classname="org.testng.TestNGAntTask" />
+     
+     <target name="test" depends="compile-test">
+       <testng classpathref="testng-cp">
+         <classfileset dir="${test.classes}" includes="**/*.class"/>
+       </testng>
+     </target>
+
+     <target name="jar" depends="test, compile" description="make jar">
+	 <jar jarfile="${build}/${pkgbase}-${git.version}.jar">
+           <fileset dir="${classes}">
+              <include name="**/*.class"/>
+           </fileset>
+            <manifest>
+                <attribute name="Built-By" value="${user.name}"/>
+                <attribute name="Git-Branch" value="${git.branch}" />
+                <attribute name="Git-Workingcopy-Dirty" value="${git.workingcopy.dirty}" />
+                <attribute name="Git-Commit" value="${git.commit}" />
+                <attribute name="Git-Tag" value="${git.tag}" />
+                <attribute name="Git-Tag-Dirty" value="${git.tag.dirty}" />
+                <attribute name="Git-Tag-Author-Name" value="${git.tag.author.name}" />
+                <attribute name="Git-Tag-Author-Email" value="${git.tag.author.email}" />
+            </manifest>
+        </jar>
+     </target>
+
+     <target name="clean" description="remove">
+        <delete dir="${pkgbase}"/>
+        <delete dir="${classes}"/>
+        <delete dir="${build}"/>
+     </target>
+
+
+
+
+</project>
+
+
+
+
