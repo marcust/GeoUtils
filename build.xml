@@ -85,14 +85,14 @@
        <pathelement location="lib/testng-5.11-jdk15.jar"/>
        <pathelement location="${classes}"/>
        <pathelement location="${test.classes}"/>
-
+       <fileset refid="libs"/>
      </path>
  
      <taskdef name="testng" classpathref="testng-cp"
           classname="org.testng.TestNGAntTask" />
      
      <target name="test" depends="compile-test">
-       <testng classpathref="testng-cp">
+       <testng classpathref="testng-cp" haltonfailure="true" verbose="2" >
          <classfileset dir="${test.classes}" includes="**/*.class"/>
        </testng>
      </target>
