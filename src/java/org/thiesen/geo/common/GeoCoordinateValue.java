@@ -37,5 +37,9 @@ public class GeoCoordinateValue extends Number {
 	public long longValue() {
 		return _value.longValue();
 	}
+	
+	public String stringValue() {
+		return String.valueOf(getValue());
+	}
 
 }
