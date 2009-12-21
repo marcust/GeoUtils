@@ -1,0 +1,7 @@
+.classpath
+.project
+*~
+build
+.ant-targets-build.xml
+.settings
+bin
