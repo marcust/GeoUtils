@@ -189,7 +189,7 @@ public final class GeoHash {
 	}
 	
 	public double getAreaInSquareMeter() {
-		return EARTH_SURFACE_AREA_KM2 * 1000L / Math.pow( 32.0D, _hash.length() );
+		return EARTH_SURFACE_AREA_KM2 * 1000.0D * 1000.0D / Math.pow( 32.0D, _hash.length() );
 	}
 
 }
