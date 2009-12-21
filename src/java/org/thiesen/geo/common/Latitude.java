@@ -1,15 +1,20 @@
 package org.thiesen.geo.common;
 
 
-public class Latitude extends GeoCoordinateValue {
+public final class Latitude extends GeoCoordinateValue {
 
 	private static final long serialVersionUID = 2177382803107454370L;
+	private static final Latitude UNKNOWN_LATITUDE = new Latitude();
 
 	Latitude(double value) {
 		super(value);
 		if (value < -90.0D || value > 90.0D ) {
 			throw new IllegalArgumentException("Latitude is only defined between -90° and +90°");
 		}
+	}
+	
+	private Latitude() {
+		super(Double.NaN);
 	}
 
 	public static Latitude valueOf(double i) {
@@ -45,7 +50,14 @@ public class Latitude extends GeoCoordinateValue {
 	public String toString() {
 		return "Latitude [getValue()=" + getValue() + "]";
 	}
+
+	public static Latitude unknownLatitude() {
+		return UNKNOWN_LATITUDE; 
+	}
 	
+	public boolean isUnknown() {
+		return UNKNOWN_LATITUDE == this;
+	}
 	
 
 	

@@ -2,6 +2,7 @@ package org.thiesen.geo.common;
 
 public final class Position {
 
+	private static final Position UNKNOWN_POSITION = Position.from(Latitude.unknownLatitude(), Longitude.unknownLongitude());
 	private final Latitude _latitude;
 	private final Longitude _longitude;
 	
@@ -24,6 +25,12 @@ public final class Position {
 
 	public static Position from(double latitude, double longitude) {
 		return new Position(Latitude.valueOf(latitude), Longitude.valueOf(longitude));
+	}
+	
+
+	public static Position from(Latitude latitude,
+			Longitude longitude) {
+		return new Position(latitude,longitude);
 	}
 
 	@Override
@@ -65,6 +72,13 @@ public final class Position {
 				+ _longitude + "]";
 	}
 
+	public static Position unknownPosition() {
+		return UNKNOWN_POSITION;
+	}
+	
+	public boolean isUnknown() {
+		return this == UNKNOWN_POSITION || this.equals(UNKNOWN_POSITION);
+	}
 	
 	
 	

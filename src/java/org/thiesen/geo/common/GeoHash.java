@@ -48,10 +48,6 @@ public final class GeoHash {
 
 	private final String _hash;
 
-
-	private static final double[] LAT_INTERVALS = {-90.0 ,  90.0};
-	private static final double[] LON_INTERVALS = {-180.0, 180.0};
-
 	private GeoHash(final Latitude latitude, final Longitude longitude, final int precision) {
 		this( encode(latitude.doubleValue(),longitude.doubleValue(), precision) );
 	}
@@ -65,43 +61,46 @@ public final class GeoHash {
 	}
 
 	private static String encode(double latitude, double longitude, final int precision){
-		final StringBuilder geohash = new StringBuilder();
-		boolean is_even = true;
-		int bit = 0, ch = 0;
+	      double[] lat_interval = {-90.0 ,  90.0};
+          double[] lon_interval = {-180.0, 180.0};
 
-		while ( geohash.length() < precision ) {
-			double mid = 0.0;
-			if( is_even ){
-				mid = (LON_INTERVALS[0] + LON_INTERVALS[1]) / 2;
-				if (longitude > mid){
-					ch |= _bits[bit];
-					LON_INTERVALS[0] = mid;
-				} else {
-					LON_INTERVALS[1] = mid;
-				}
+          StringBuilder geohash = new StringBuilder();
+          boolean is_even = true;
+          int bit = 0, ch = 0;
 
-			} else {
-				mid = (LAT_INTERVALS[0] + LAT_INTERVALS[1]) / 2;
-				if(latitude > mid){
-					ch |= _bits[bit];
-					LAT_INTERVALS[0] = mid;
-				} else {
-					LAT_INTERVALS[1] = mid;
-				}
-			}
+          while(geohash.length() < precision){
+                  double mid = 0.0;
+                  if(is_even){
+                          mid = (lon_interval[0] + lon_interval[1]) / 2;
+                          if (longitude > mid){
+                                  ch |= _bits[bit];
+                                  lon_interval[0] = mid;
+                          } else {
+                                  lon_interval[1] = mid;
+                          }
 
-			is_even = is_even ? false : true;
+                  } else {
+                          mid = (lat_interval[0] + lat_interval[1]) / 2;
+                          if(latitude > mid){
+                                  ch |= _bits[bit];
+                                  lat_interval[0] = mid;
+                          } else {
+                                  lat_interval[1] = mid;
+                          }
+                  }
 
-			if (bit  < 4){
-				bit ++;
-			} else {
-				geohash.append(BASE_32[ch]);
-				bit =0;
-				ch = 0;
-			}
-		}
+                  is_even = is_even ? false : true;
 
-		return geohash.toString();
+                  if (bit  < 4){
+                          bit ++;
+                  } else {
+                          geohash.append(BASE_32[ch]);
+                          bit =0;
+                          ch = 0;
+                  }
+          }
+
+          return geohash.toString();
 	}
 
 	private static Position decode(String geohash) {
@@ -123,43 +122,46 @@ public final class GeoHash {
 	}
 
 	private static double[] decode_exactly(final String geohash){
-		double lat_err =  90.0;
-		double lon_err = 180.0;
-		boolean is_even = true;
-		int sz = geohash.length();
-		int bsz = _bits.length;
-		double latitude, longitude;
-		for (int i = 0; i < sz; i++){
+        double[] lat_interval = {-90.0 , 90.0};
+        double[] lon_interval = {-180.0, 180.0};
 
-			int cd = _decodemap.get(geohash.charAt(i));
+        double lat_err =  90.0;
+        double lon_err = 180.0;
+        boolean is_even = true;
+        int sz = geohash.length();
+        int bsz = _bits.length;
+        double latitude, longitude;
+        for (int i = 0; i < sz; i++){
 
-			for (int z = 0; z< bsz; z++){
-				int mask = _bits[z];
-				if (is_even){
-					lon_err /= 2;
-					if ((cd & mask) != 0){
-						LON_INTERVALS[0] = (LON_INTERVALS[0]+LON_INTERVALS[1])/2;
-					} else {
-						LON_INTERVALS[1] = (LON_INTERVALS[0]+LON_INTERVALS[1])/2;
-					}
+                int cd = _decodemap.get(geohash.charAt(i));
 
-				} else {
-					lat_err /=2;
+                for (int z = 0; z< bsz; z++){
+                        int mask = _bits[z];
+                        if (is_even){
+                                lon_err /= 2;
+                                if ((cd & mask) != 0){
+                                        lon_interval[0] = (lon_interval[0]+lon_interval[1])/2;
+                                } else {
+                                        lon_interval[1] = (lon_interval[0]+lon_interval[1])/2;
+                                }
 
-					if ( (cd & mask) != 0){
-						LAT_INTERVALS[0] = (LAT_INTERVALS[0]+LAT_INTERVALS[1])/2;
-					} else {
-						LAT_INTERVALS[1] = (LAT_INTERVALS[0]+LAT_INTERVALS[1])/2;
-					}
-				}
-				is_even = is_even ? false : true;
-			}
+                        } else {
+                                lat_err /=2;
 
-		}
-		latitude  = (LAT_INTERVALS[0] + LAT_INTERVALS[1]) / 2;
-		longitude = (LON_INTERVALS[0] + LON_INTERVALS[1]) / 2;
+                                if ( (cd & mask) != 0){
+                                        lat_interval[0] = (lat_interval[0]+lat_interval[1])/2;
+                                } else {
+                                        lat_interval[1] = (lat_interval[0]+lat_interval[1])/2;
+                                }
+                        }
+                        is_even = is_even ? false : true;
+                }
 
-		return new double []{latitude, longitude, lat_err, lon_err};
+        }
+        latitude  = (lat_interval[0] + lat_interval[1]) / 2;
+        longitude = (lon_interval[0] + lon_interval[1]) / 2;
+
+        return new double []{latitude, longitude, lat_err, lon_err};
 	}
 
 	private static double getPrecision(double x, double precision) {

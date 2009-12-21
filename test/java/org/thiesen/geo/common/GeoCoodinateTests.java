@@ -59,4 +59,15 @@ public class GeoCoodinateTests {
 		
 	}
 	
+	@Test
+	public void testUnknown() {
+		final Position pos1 = Position.unknownPosition();
+		final Position pos2 = Position.from(Latitude.unknownLatitude(), Longitude.unknownLongitude());
+	
+		assertEquals(pos1, pos2);
+		assertEquals(pos1, pos1);
+		assertEquals(pos2, pos2);
+	}
+	
+	
 }

@@ -3,12 +3,17 @@ package org.thiesen.geo.common;
 public class Longitude extends GeoCoordinateValue {
 
 	private static final long serialVersionUID = 5631264172357672045L;
+	private static final Longitude UNKNOWN_LONGITUDE = new Longitude();
 
 	Longitude(double value) {
 		super(value);
 		if (value < -180.0D || value > 180.0D ) {
 			throw new IllegalArgumentException("Latitude is only defined between -90° and +90°");
 		}
+	}
+	
+	private Longitude() {
+		super(Double.NaN);
 	}
 
 	public static Longitude valueOf(double value) {
@@ -45,4 +50,11 @@ public class Longitude extends GeoCoordinateValue {
 		return "Longitude [getValue()=" + getValue() + "]";
 	}
 
+	public static Longitude unknownLongitude() {
+		return UNKNOWN_LONGITUDE;
+	}
+
+	public boolean isUnknown() {
+		return UNKNOWN_LONGITUDE == this;
+	}
 }
