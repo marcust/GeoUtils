@@ -364,7 +364,7 @@ public final class GeoHash {
 	
 	private static String calculateAdjacent(final String srcHash, final Orientation dir) {
 		final char lastChr = srcHash.charAt(srcHash.length()-1);
-		final EvenOdd type = (srcHash.length() % 2) == 1 ? EvenOdd.ODD : EvenOdd.EVEN;
+		final EvenOdd type = (srcHash.length() % 2) != 0 ? EvenOdd.ODD : EvenOdd.EVEN;
 		String base = srcHash.substring(0,srcHash.length()-1);
 		if (BORDERS.get(dir).get(type).indexOf(lastChr)!=-1)
 			base = calculateAdjacent(base, dir);
