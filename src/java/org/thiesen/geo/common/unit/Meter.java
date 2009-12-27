@@ -3,6 +3,7 @@ package org.thiesen.geo.common.unit;
 public final class Meter extends Number {
 
 	private static final long serialVersionUID = -6707418659926241241L;
+	private static final Meter ZERO = valueOf( 0.0D );
 	private final Double _value;
 
 	private Meter( final Double value ) {
@@ -11,6 +12,10 @@ public final class Meter extends Number {
 	
 	public static Meter valueOf( final Double value ) {
 		return new Meter( value );
+	}
+	
+	public static Meter valueOf( final double value ) {
+		return new Meter( Double.valueOf( value ) );
 	}
 	
 	@Override
@@ -72,7 +77,7 @@ public final class Meter extends Number {
 	}
 
 	public static Meter zero() {
-		return new Meter( 0.0D );
+		return ZERO;
 	}
 
 	

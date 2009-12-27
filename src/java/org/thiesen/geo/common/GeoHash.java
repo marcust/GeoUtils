@@ -33,8 +33,8 @@ import com.google.common.collect.ImmutableMap.Builder;
 
 public final class GeoHash {
 	
-	private static enum Orientation { RIGHT, LEFT, TOP, BOTTOM };
-	private static enum EvenOdd { EVEN, ODD };
+	private static enum Orientation { RIGHT, LEFT, TOP, BOTTOM }
+	private static enum EvenOdd { EVEN, ODD }
 	
 	private final static ImmutableMap<Orientation, ImmutableMap<EvenOdd, String>> NEIGHBORS = ImmutableMap.of(
 			Orientation.RIGHT, ImmutableMap.<EvenOdd,String>of( 
@@ -124,7 +124,7 @@ public final class GeoHash {
 	static {
 		Builder<Character, Integer> builder = ImmutableMap.<Character,Integer>builder();
 		for (int i = 0; i < BASE_32.length; i++ ){
-			builder.put(BASE_32[i], i);
+			builder.put(Character.valueOf( BASE_32[i] ), Integer.valueOf( i ) );
 		}
 		_decodemap = builder.build();
 	}
@@ -232,7 +232,7 @@ public final class GeoHash {
         double latitude, longitude;
         for (int i = 0; i < geohash.length(); i++){
 
-                int cd = _decodemap.get(geohash.charAt(i));
+                int cd = _decodemap.get(Character.valueOf(geohash.charAt(i))).intValue();
 
                 for (int z = 0; z< bsz; z++){
                         int mask = _bits[z];

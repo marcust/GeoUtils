@@ -3,6 +3,7 @@ package org.thiesen.geo.common.unit;
 public final class Kilometer extends Number {
 
 	private static final long serialVersionUID = -6707418659926241241L;
+	private static final Kilometer ZERO = valueOf( 0.0D );
 	private final Double _value;
 
 	private Kilometer( final Double value ) {
@@ -12,6 +13,11 @@ public final class Kilometer extends Number {
 	public static Kilometer valueOf( final Double value ) {
 		return new Kilometer( value );
 	}
+	
+	public static Kilometer valueOf( final double value ) {
+		return new Kilometer( Double.valueOf( value ) );
+	}
+	
 	
 	@Override
 	public double doubleValue() {
@@ -72,6 +78,6 @@ public final class Kilometer extends Number {
 	}
 
 	public static Kilometer zero() {
-		return new Kilometer( 0.0D );
+		return ZERO;
 	}
 }

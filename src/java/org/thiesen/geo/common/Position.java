@@ -16,6 +16,10 @@ public final class Position {
 	public GeoHash asGeoHash() {
 		return !isUnknown() ? GeoHash.encodeWithDefaultPrecision(this) : null;
 	}
+	
+	public GeoHash asGeoHash(final int precision) {
+		return !isUnknown() ? GeoHash.encodeWithPrecision(this, precision) : null;
+	}
 
 	public Latitude getLatitude() {
 		return _latitude;
@@ -33,6 +37,12 @@ public final class Position {
 	public static Position from(Latitude latitude,
 			Longitude longitude) {
 		return new Position(latitude,longitude);
+	}
+	
+	
+	public static Position fromE6(long latitudeE6,
+			long longitudeE6) {
+		return from( latitudeE6 / 1E6, longitudeE6 / 1E6 );
 	}
 
 	@Override
@@ -117,6 +127,10 @@ public final class Position {
 
 	private double radians(double a) {
 		return a * 0.01745329251994;
+	}
+	
+	public static Position origin() {
+		return Position.from(0.0, 0.0);
 	}
 
 }

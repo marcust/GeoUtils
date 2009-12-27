@@ -3,6 +3,7 @@ package org.thiesen.geo.common.unit;
 public final class Feet extends Number {
 
 	private static final long serialVersionUID = -6707418659926241241L;
+	private static final Feet ZERO = valueOf( 0.0D );
 	private final Double _value;
 
 	private Feet( final Double value ) {
@@ -11,6 +12,10 @@ public final class Feet extends Number {
 	
 	public static Feet valueOf( final Double value ) {
 		return new Feet( value );
+	}
+	
+	public static Feet valueOf( final double value ) {
+		return new Feet( Double.valueOf( value ) );
 	}
 	
 	@Override
@@ -72,7 +77,7 @@ public final class Feet extends Number {
 	}
 	
 	public static Feet zero() {
-		return new Feet( 0.0D );
+		return ZERO;
 	}
 
 }

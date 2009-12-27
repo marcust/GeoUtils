@@ -3,6 +3,7 @@ package org.thiesen.geo.common.unit;
 public final class Miles extends Number {
 
 	private static final long serialVersionUID = -6707418659926241241L;
+	private static final Miles ZERO = valueOf( 0.0D );
 	private final Double _value;
 
 	private Miles( final Double value ) {
@@ -11,6 +12,10 @@ public final class Miles extends Number {
 	
 	public static Miles valueOf( final Double value ) {
 		return new Miles( value );
+	}
+	
+	public static Miles valueOf( final double value ) {
+		return new Miles( Double.valueOf( value ) );
 	}
 	
 	@Override
@@ -72,7 +77,7 @@ public final class Miles extends Number {
 	}
 	
 	public static Miles zero() {
-		return new Miles( 0.0D );
+		return ZERO;
 	}
 	
 }

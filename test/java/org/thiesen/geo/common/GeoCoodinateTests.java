@@ -53,7 +53,7 @@ public class GeoCoodinateTests {
 		double lastSize = Double.MIN_VALUE;
 		for ( int i = GeoHash.DEFAULT_PRECISION; i > 0; i-- ) {
 			double size = hash.withMaximumPrecision(i).getAreaInSquareMeter();
-			//System.out.println(i + ": " + size );
+			System.out.println(i + ": " + size );
 			assertTrue(lastSize < size,"Less precision leads to greater areas");
 			lastSize = size;
 		}
