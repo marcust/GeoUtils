@@ -103,4 +103,32 @@ public class GeoCoodinateTests {
 	}
 	
 	
+	@Test
+	public void testRectangle() {
+		final GeoHash hash = Position.from(0.0D, 0.0D).asGeoHash(4);
+		GeoHashRectangle rectangle = hash.getRectangle();
+		
+		assertTrue(rectangle.getTopLeft().isLeftOf( rectangle.getCenter() ), rectangle.getTopLeft() + " should be left of " + rectangle.getCenter() );
+		assertTrue(rectangle.getTopLeft().isTopOf( rectangle.getCenter() ), rectangle.getTopLeft() + " should be greater than " + rectangle.getCenter() );
+		
+		assertTrue(rectangle.getTopRight().isOnSameLatitudeAs( rectangle.getTopLeft() ), rectangle.getTopRight() + " shoid lbe on same latitude as " + rectangle.getTopLeft() );
+		assertTrue(rectangle.getTopRight().isRightOf( rectangle.getTopLeft() ) );
+		
+		assertTrue(rectangle.getTopRight().isRightOf( rectangle.getCenter() ),  rectangle.getTopRight() + " should be right of " + rectangle.getCenter() );
+		assertTrue(rectangle.getTopRight().isTopOf( rectangle.getCenter() ) );
+		
+		assertTrue(rectangle.getBottomLeft().isLeftOf( rectangle.getCenter() ) );
+		assertTrue(rectangle.getBottomLeft().isBelowOf( rectangle.getCenter() ), rectangle.getBottomLeft() + " shoild be below " + rectangle.getCenter() );
+		
+		assertTrue(rectangle.getBottomRight().isOnSameLatitudeAs( rectangle.getBottomLeft() ) );
+		assertTrue(rectangle.getBottomRight().isRightOf( rectangle.getBottomLeft() ) );
+		
+		assertTrue(rectangle.getBottomRight().isRightOf( rectangle.getCenter() ),  rectangle.getBottomRight() + " should be right of " + rectangle.getCenter() );
+		assertTrue(rectangle.getBottomRight().isBelowOf( rectangle.getCenter() ) );
+		
+		
+	
+	}
+	
+	
 }

@@ -48,7 +48,7 @@ public final class Latitude extends GeoCoordinateValue {
 
 	@Override
 	public String toString() {
-		return "Latitude [getValue()=" + getValue() + "]";
+		return "Latitude:" + getValue() + "";
 	}
 
 	public static Latitude unknownLatitude() {

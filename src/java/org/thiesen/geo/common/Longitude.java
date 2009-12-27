@@ -47,7 +47,7 @@ public class Longitude extends GeoCoordinateValue {
 
 	@Override
 	public String toString() {
-		return "Longitude [getValue()=" + getValue() + "]";
+		return "Longitude:" + getValue();
 	}
 
 	public static Longitude unknownLongitude() {

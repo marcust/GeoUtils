@@ -80,7 +80,7 @@ public final class Position {
 
 	@Override
 	public String toString() {
-		return "Position [_latitude=" + _latitude + ", _longitude="
+		return "Position [" + _latitude + ","
 		+ _longitude + "]";
 	}
 
@@ -131,6 +131,46 @@ public final class Position {
 	
 	public static Position origin() {
 		return Position.from(0.0, 0.0);
+	}
+
+	public boolean isLeftOf(Position otherPosition) {
+		return getLongitude().doubleValue() < otherPosition.getLongitude().doubleValue();
+	}
+
+	public boolean isExactLeftOf(Position otherPosition) {
+		return isLeftOf(otherPosition) && isOnSameLatitudeAs(otherPosition);
+	}
+
+	public boolean isRightOf(Position otherPosition) {
+		return getLongitude().doubleValue() > otherPosition.getLongitude().doubleValue();
+	}
+
+	public boolean isExactRightOf(Position otherPosition) {
+		return isRightOf(otherPosition) && isOnSameLatitudeAs(otherPosition);
+	}
+
+	public boolean isTopOf(Position otherPosition) {
+		return getLatitude().doubleValue() > otherPosition.getLatitude().doubleValue();
+	}
+	
+	public boolean isExactTopOf(Position otherPosition) {
+		return isTopOf(otherPosition) && isOnSameLongitudeAs( otherPosition );
+	}
+
+	public boolean isBelowOf(Position otherPosition) {
+		return getLatitude().doubleValue() < otherPosition.getLatitude().doubleValue();
+	}
+	
+	public boolean isExactBelowOf(Position otherPosition) {
+		return isBelowOf(otherPosition) && isOnSameLongitudeAs( otherPosition );
+	}
+	
+	public boolean isOnSameLatitudeAs(Position otherPosition) {
+		return getLatitude().equals(otherPosition.getLatitude());
+	}
+
+	public boolean isOnSameLongitudeAs(Position otherPosition) {
+		return otherPosition.getLongitude().equals(getLongitude());
 	}
 
 }
