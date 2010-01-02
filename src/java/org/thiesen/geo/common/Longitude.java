@@ -1,5 +1,7 @@
 package org.thiesen.geo.common;
 
+import org.thiesen.geo.common.dms.DMSValue;
+
 public class Longitude extends GeoCoordinateValue {
 
 	private static final long serialVersionUID = 5631264172357672045L;
@@ -57,4 +59,10 @@ public class Longitude extends GeoCoordinateValue {
 	public boolean isUnknown() {
 		return UNKNOWN_LONGITUDE == this;
 	}
+	
+	@Override
+	public DMSValue toDMS() {
+		return DMSValue.valueOf(this);
+	}
+	
 }

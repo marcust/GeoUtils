@@ -1,5 +1,7 @@
 package org.thiesen.geo.common;
 
+import org.thiesen.geo.common.dms.DMSValue;
+
 
 public final class Latitude extends GeoCoordinateValue {
 
@@ -59,6 +61,10 @@ public final class Latitude extends GeoCoordinateValue {
 		return UNKNOWN_LATITUDE == this;
 	}
 	
-
+	@Override
+	public DMSValue toDMS() {
+		return DMSValue.valueOf(this);
+	}
+	
 	
 }

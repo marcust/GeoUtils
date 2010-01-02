@@ -1,6 +1,8 @@
 package org.thiesen.geo.common;
 
-public class GeoCoordinateValue extends Number {
+import org.thiesen.geo.common.dms.DMSValue;
+
+public abstract class GeoCoordinateValue extends Number {
 
 	private static final long serialVersionUID = -77606516065835024L;
 
@@ -41,5 +43,7 @@ public class GeoCoordinateValue extends Number {
 	public String stringValue() {
 		return String.valueOf(getValue());
 	}
+	
+	public abstract DMSValue toDMS();
 
 }
