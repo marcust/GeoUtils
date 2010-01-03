@@ -32,10 +32,10 @@ import com.google.common.collect.Iterators;
 import com.google.common.collect.ImmutableMap.Builder;
 
 public final class GeoHash {
-	
+
 	private static enum Orientation { RIGHT, LEFT, TOP, BOTTOM }
 	private static enum EvenOdd { EVEN, ODD }
-	
+
 	private final static ImmutableMap<Orientation, ImmutableMap<EvenOdd, String>> NEIGHBORS = ImmutableMap.of(
 			Orientation.RIGHT, ImmutableMap.<EvenOdd,String>of( 
 					EvenOdd.EVEN, "bc01fg45238967deuvhjyznpkmstqrwx",
@@ -54,7 +54,7 @@ public final class GeoHash {
 					EvenOdd.ODD, "238967debc01fg45kmstqrwxuvhjyznp"
 			)
 	);
-	
+
 
 	private final static ImmutableMap<Orientation, ImmutableMap<EvenOdd, String>> BORDERS = ImmutableMap.of(
 			Orientation.RIGHT, ImmutableMap.<EvenOdd,String>of( 
@@ -74,7 +74,7 @@ public final class GeoHash {
 					EvenOdd.ODD, "0145hjnp"
 			)
 	);
-	
+
 	public static class DecodeResult {
 
 		private final GeoHashRectangle _rectangle;
@@ -119,7 +119,7 @@ public final class GeoHash {
 		'y','z'} ;
 
 	private static final Pattern VALID_CHAR_PATTERN = Pattern.compile("[" + join(BASE_32) + "]+");
-	
+
 	private final static ImmutableMap<Character, Integer> DECODEMAP;
 	static {
 		Builder<Character, Integer> builder = ImmutableMap.<Character,Integer>builder();
@@ -130,7 +130,7 @@ public final class GeoHash {
 	}
 
 	private final static int[] _bits = {16, 8, 4, 2, 1};
-	
+
 	static final int DEFAULT_PRECISION = 15;
 
 	private static final double EARTH_SURFACE_AREA_KM2 = 510072000.0D;
@@ -157,62 +157,62 @@ public final class GeoHash {
 		if ( !VALID_CHAR_PATTERN.matcher(hash).matches() ) {
 			throw new IllegalArgumentException("Hash must contain valid chars only: " + join(BASE_32));
 		}
-		
-		
+
+
 		_hash = hash.toLowerCase();
 	}
-	
+
 	public static GeoHash encodeWithPrecision(final Latitude latitude, final Longitude longitude, final int precision ) {
 		return new GeoHash(latitude,longitude,precision);
 	}
 
 	private static String encode(double latitude, double longitude, final int precision){
-	      double[] lat_interval = {-90.0 ,  90.0};
-          double[] lon_interval = {-180.0, 180.0};
+		double[] lat_interval = {-90.0 ,  90.0};
+		double[] lon_interval = {-180.0, 180.0};
 
-          StringBuilder geohash = new StringBuilder();
-          boolean is_even = true;
-          int bit = 0, ch = 0;
+		StringBuilder geohash = new StringBuilder();
+		boolean is_even = true;
+		int bit = 0, ch = 0;
 
-          while(geohash.length() < precision){
-                  double mid = 0.0;
-                  if(is_even){
-                          mid = (lon_interval[0] + lon_interval[1]) / 2;
-                          if (longitude > mid){
-                                  ch |= _bits[bit];
-                                  lon_interval[0] = mid;
-                          } else {
-                                  lon_interval[1] = mid;
-                          }
+		while(geohash.length() < precision){
+			double mid = 0.0;
+			if(is_even){
+				mid = (lon_interval[0] + lon_interval[1]) / 2;
+				if (longitude > mid){
+					ch |= _bits[bit];
+					lon_interval[0] = mid;
+				} else {
+					lon_interval[1] = mid;
+				}
 
-                  } else {
-                          mid = (lat_interval[0] + lat_interval[1]) / 2;
-                          if(latitude > mid){
-                                  ch |= _bits[bit];
-                                  lat_interval[0] = mid;
-                          } else {
-                                  lat_interval[1] = mid;
-                          }
-                  }
+			} else {
+				mid = (lat_interval[0] + lat_interval[1]) / 2;
+				if ( latitude > mid ) {
+					ch |= _bits[bit];
+					lat_interval[0] = mid;
+				} else {
+					lat_interval[1] = mid;
+				}
+			}
 
-                  is_even = is_even ? false : true;
+			is_even = is_even ? false : true;
 
-                  if (bit  < 4){
-                          bit ++;
-                  } else {
-                          geohash.append(BASE_32[ch]);
-                          bit =0;
-                          ch = 0;
-                  }
-          }
+			if (bit  < 4){
+				bit ++;
+			} else {
+				geohash.append(BASE_32[ch]);
+				bit =0;
+				ch = 0;
+			}
+		}
 
-          return geohash.toString();
+		return geohash.toString();
 	}
 
 	public GeoHashRectangle getRectangle() {
 		return decodeExactly(_hash).getRectangle();
 	}
-	
+
 	private static Position decode(String geohash) {
 		final DecodeResult decodeResult = decodeExactly(geohash);
 
@@ -222,48 +222,48 @@ public final class GeoHash {
 	}
 
 	private static DecodeResult decodeExactly(final String geohash){
-        double[] lat_interval = {-90.0 , 90.0};
-        double[] lon_interval = {-180.0, 180.0};
+		double[] lat_interval = {-90.0 , 90.0};
+		double[] lon_interval = {-180.0, 180.0};
 
-        double lat_err =  90.0;
-        double lon_err = 180.0;
-        boolean is_even = true;
-        int bsz = _bits.length;
-        double latitude, longitude;
-        for (int i = 0; i < geohash.length(); i++){
+		double lat_err =  90.0;
+		double lon_err = 180.0;
+		boolean is_even = true;
+		int bsz = _bits.length;
+		double latitude, longitude;
+		for (int i = 0; i < geohash.length(); i++){
 
-                int cd = DECODEMAP.get(Character.valueOf(geohash.charAt(i))).intValue();
+			int cd = DECODEMAP.get(Character.valueOf(geohash.charAt(i))).intValue();
 
-                for (int z = 0; z< bsz; z++){
-                        int mask = _bits[z];
-                        if (is_even){
-                                lon_err /= 2;
-                                if ((cd & mask) != 0){
-                                        lon_interval[0] = (lon_interval[0]+lon_interval[1])/2;
-                                } else {
-                                        lon_interval[1] = (lon_interval[0]+lon_interval[1])/2;
-                                }
+			for (int z = 0; z< bsz; z++){
+				int mask = _bits[z];
+				if (is_even){
+					lon_err /= 2;
+					if ((cd & mask) != 0){
+						lon_interval[0] = (lon_interval[0]+lon_interval[1])/2;
+					} else {
+						lon_interval[1] = (lon_interval[0]+lon_interval[1])/2;
+					}
 
-                        } else {
-                                lat_err /=2;
+				} else {
+					lat_err /=2;
 
-                                if ( (cd & mask) != 0){
-                                        lat_interval[0] = (lat_interval[0]+lat_interval[1])/2;
-                                } else {
-                                        lat_interval[1] = (lat_interval[0]+lat_interval[1])/2;
-                                }
-                        }
-                        is_even = is_even ? false : true;
-                }
+					if ( (cd & mask) != 0){
+						lat_interval[0] = (lat_interval[0]+lat_interval[1])/2;
+					} else {
+						lat_interval[1] = (lat_interval[0]+lat_interval[1])/2;
+					}
+				}
+				is_even = is_even ? false : true;
+			}
 
-        }
-        
-        final GeoHashRectangle rectangle = GeoHashRectangle.valueOf(lat_interval, lon_interval);
-        
-        latitude  = (lat_interval[0] + lat_interval[1]) / 2;
-        longitude = (lon_interval[0] + lon_interval[1]) / 2;
+		}
 
-        return new DecodeResult( rectangle, latitude, longitude, lat_err, lon_err );
+		final GeoHashRectangle rectangle = GeoHashRectangle.valueOf(lat_interval, lon_interval);
+
+		latitude  = (lat_interval[0] + lat_interval[1]) / 2;
+		longitude = (lon_interval[0] + lon_interval[1]) / 2;
+
+		return new DecodeResult( rectangle, latitude, longitude, lat_err, lon_err );
 	}
 
 	private static double getPrecision(double x, double precision) {
@@ -279,11 +279,11 @@ public final class GeoHash {
 	static GeoHash encodeWithPrecision(final Position position, final int precision) {
 		return new GeoHash(position.getLatitude(), position.getLongitude(), precision);
 	}
-	
+
 	public Position asPosition() {
 		return decode(_hash);
 	}
-	
+
 	public GeoHash withMaximumPrecision( int precision ) {
 		if ( precision <= 0 ) {
 			throw new IllegalArgumentException("Precision must be greater than zero" );
@@ -293,11 +293,11 @@ public final class GeoHash {
 		}
 		return this;
 	}
-	
+
 	public double getAreaInSquareMeter() {
 		return EARTH_SURFACE_AREA_KM2 * 1000.0D * 1000.0D / Math.pow( 32.0D, _hash.length() );
 	}
-	
+
 	public String getValue() {
 		return _hash;
 	}
@@ -317,7 +317,7 @@ public final class GeoHash {
 	public GeoHash calculateRightAdjacentHash() {
 		return new GeoHash(calculateAdjacent(getValue(),Orientation.RIGHT));
 	}
-	
+
 	public GeoHash calculateTopLeftAdjacentHash() {
 		return new GeoHash(calculateAdjacent( calculateTopAdjacentHash().getValue(), Orientation.LEFT ) );
 	}
@@ -333,7 +333,7 @@ public final class GeoHash {
 	public GeoHash calculateBottomRightAdjacentHash() {
 		return new GeoHash(calculateAdjacent( calculateBottomAdjacentHash().getValue(), Orientation.RIGHT ) );
 	}
-	
+
 	public AdjacentGeoHashes getAdjacentHashes() {
 		return AdjacentGeoHashes.valueOf(
 				calculateTopAdjacentHash(),
@@ -345,23 +345,23 @@ public final class GeoHash {
 				calculateBottomLeftAdjacentHash(),
 				calculateBottomRightAdjacentHash());
 	}
-	
+
 	public Iterator<GeoHash> adjacentHashesIncludingSelfIterator() {
 		return Iterators.forArray(
 				calculateTopLeftAdjacentHash(),
 				calculateTopAdjacentHash(),
 				calculateTopRightAdjacentHash(),
-				
+
 				calculateLeftAdjacentHash(),
 				this,
 				calculateRightAdjacentHash(),
-				
+
 				calculateBottomLeftAdjacentHash(),
 				calculateBottomAdjacentHash(),
 				calculateBottomRightAdjacentHash()
-				);
+		);
 	}
-	
+
 	private static String calculateAdjacent(final String srcHash, final Orientation dir) {
 		final char lastChr = srcHash.charAt(srcHash.length()-1);
 		final EvenOdd type = (srcHash.length() % 2) != 0 ? EvenOdd.ODD : EvenOdd.EVEN;
@@ -371,7 +371,7 @@ public final class GeoHash {
 		return base + BASE_32[NEIGHBORS.get(dir).get(type).indexOf(lastChr)];
 	}
 
-	
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;
@@ -406,6 +406,6 @@ public final class GeoHash {
 		return "GeoHash [" + _hash + "]";
 	}
 
-	
-	
+
+
 }
