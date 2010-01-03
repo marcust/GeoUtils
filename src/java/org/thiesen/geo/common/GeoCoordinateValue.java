@@ -17,7 +17,7 @@ public abstract class GeoCoordinateValue extends Number {
 	}
 	
 	public int getValueE6() {
-		return (int) (_value.doubleValue() * 1E6);
+		return (int)Math.round(_value.doubleValue() * 1E6);
 	}
 	
 	@Override
@@ -44,6 +44,13 @@ public abstract class GeoCoordinateValue extends Number {
 		return String.valueOf(getValue());
 	}
 	
-	public abstract DMSValue toDMS();
+	protected boolean valueBetween( final Number min, final Number max ) {
+        final double val = _value.doubleValue();
+        
+        return val >= min.doubleValue() && val <= max.doubleValue();
+    }
 
+	public abstract DMSValue toDMS();
+	
+    
 }

@@ -65,4 +65,8 @@ public class Longitude extends GeoCoordinateValue {
 		return DMSValue.valueOf(this);
 	}
 	
+    public boolean isBetween( final Longitude minLon, final Longitude maxLon ) {
+        return valueBetween( minLon, maxLon );
+    }
+	
 }

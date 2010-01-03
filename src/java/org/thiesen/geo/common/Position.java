@@ -92,7 +92,7 @@ public final class Position {
 		return this == UNKNOWN_POSITION || this.equals(UNKNOWN_POSITION);
 	}
 
-	/* This method is cited from Spatial Lucen LatLng class
+	/* This method is cited from Spatial Lucene LatLng class
 	 * by the Apache Software Foundation
 	 */
 	public Kilometer calculateDistanceTo( Position other ) {
@@ -172,5 +172,10 @@ public final class Position {
 	public boolean isOnSameLongitudeAs(Position otherPosition) {
 		return otherPosition.getLongitude().equals(getLongitude());
 	}
+	
+    public boolean isWithin( final Latitude minLat, final Latitude maxLat, final Longitude minLon, final Longitude maxLon ) {
+        return getLatitude().isBetween( minLat, maxLat ) && getLongitude().isBetween( minLon, maxLon );
+        
+    }
 
 }

@@ -66,5 +66,10 @@ public final class Latitude extends GeoCoordinateValue {
 		return DMSValue.valueOf(this);
 	}
 	
+    public boolean isBetween( final Latitude minLat, final Latitude maxLat ) {
+        return valueBetween( minLat, maxLat );
+        
+    }
+	
 	
 }

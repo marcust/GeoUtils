@@ -120,13 +120,13 @@ public final class GeoHash {
 
 	private static final Pattern VALID_CHAR_PATTERN = Pattern.compile("[" + join(BASE_32) + "]+");
 	
-	private final static ImmutableMap<Character, Integer> _decodemap;
+	private final static ImmutableMap<Character, Integer> DECODEMAP;
 	static {
 		Builder<Character, Integer> builder = ImmutableMap.<Character,Integer>builder();
 		for (int i = 0; i < BASE_32.length; i++ ){
 			builder.put(Character.valueOf( BASE_32[i] ), Integer.valueOf( i ) );
 		}
-		_decodemap = builder.build();
+		DECODEMAP = builder.build();
 	}
 
 	private final static int[] _bits = {16, 8, 4, 2, 1};
@@ -232,7 +232,7 @@ public final class GeoHash {
         double latitude, longitude;
         for (int i = 0; i < geohash.length(); i++){
 
-                int cd = _decodemap.get(Character.valueOf(geohash.charAt(i))).intValue();
+                int cd = DECODEMAP.get(Character.valueOf(geohash.charAt(i))).intValue();
 
                 for (int z = 0; z< bsz; z++){
                         int mask = _bits[z];
@@ -267,8 +267,8 @@ public final class GeoHash {
 	}
 
 	private static double getPrecision(double x, double precision) {
-		double base = Math.pow(10,- precision);
-		double diff = x % base;
+		final double base = Math.pow(10,- precision);
+		final double diff = x % base;
 		return x - diff;
 	}
 
