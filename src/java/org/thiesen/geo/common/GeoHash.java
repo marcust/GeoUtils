@@ -166,6 +166,10 @@ public final class GeoHash {
 		return new GeoHash(latitude,longitude,precision);
 	}
 
+	public static GeoHash encode(final Latitude latitude, final Longitude longitude ) {
+		return new GeoHash(latitude,longitude,DEFAULT_PRECISION);
+	}
+
 	private static String encode(double latitude, double longitude, final int precision){
 		double[] lat_interval = {-90.0 ,  90.0};
 		double[] lon_interval = {-180.0, 180.0};
