@@ -1,10 +1,14 @@
 package org.thiesen.geo.common;
 
+import java.io.Serializable;
+
 import org.thiesen.geo.common.unit.Kilometer;
 
-public final class Position {
+public final class Position implements Serializable {
 
-	private static final Position UNKNOWN_POSITION = Position.from(Latitude.unknownLatitude(), Longitude.unknownLongitude());
+    private static final long serialVersionUID = 6022918892513910685L;
+
+    private static final Position UNKNOWN_POSITION = Position.from(Latitude.unknownLatitude(), Longitude.unknownLongitude());
 	private final Latitude _latitude;
 	private final Longitude _longitude;
 

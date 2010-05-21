@@ -24,6 +24,7 @@
 
 package org.thiesen.geo.common;
 
+import java.io.Serializable;
 import java.util.Iterator;
 import java.util.regex.Pattern;
 
@@ -31,9 +32,11 @@ import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Iterators;
 import com.google.common.collect.ImmutableMap.Builder;
 
-public final class GeoHash {
+public final class GeoHash implements Serializable {
 
-	private static enum Orientation { RIGHT, LEFT, TOP, BOTTOM }
+    private static final long serialVersionUID = 1600913403150417804L;
+
+    private static enum Orientation { RIGHT, LEFT, TOP, BOTTOM }
 	private static enum EvenOdd { EVEN, ODD }
 
 	private final static ImmutableMap<Orientation, ImmutableMap<EvenOdd, String>> NEIGHBORS = ImmutableMap.of(
